@@ -1626,12 +1626,18 @@
         window.firebaseProvider = provider;
         window.GoogleAuthProvider = GoogleAuthProvider;
         window.firebaseModules = { signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, collection, addDoc, getDocs, deleteDoc, doc, query, where, orderBy, limit };
+        
+        // Signal bahwa Firebase sudah ready
+        window.firebaseReady = true;
+        window.dispatchEvent(new Event('firebaseReady'));
     </script>
     
     <!-- Google API Client for Drive -->
     <script src="https://apis.google.com/js/api.js"></script>
     
     <script>
+        // Wait for Firebase before running main app
+        function initApp() {
         // GLOBAL STATE
         let stream = null;
         let model = null;
@@ -3450,6 +3456,15 @@ Metode: IoU Tracking (threshold: ${iouThreshold})
             if (installedMessage) {
                 installedMessage.style.display = 'block';
             }
+        }
+        
+        } // End initApp
+        
+        // Start app when Firebase ready
+        if (window.firebaseReady) {
+            initApp();
+        } else {
+            window.addEventListener('firebaseReady', initApp);
         }
     </script>
 </body>
